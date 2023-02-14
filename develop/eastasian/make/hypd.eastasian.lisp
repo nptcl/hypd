@@ -4,7 +4,8 @@
 (declaim (optimize safety))
 (defconstant +width+ #p"EastAsianWidth.txt")
 (defconstant +header+ #p"eastasian.h")
-(defconstant +source+ #p"eastasian_table.c")
+(defconstant +source+ #p"source.c")
+(defconstant +output+ #p"eastasian.c")
 
 ;;
 ;;  make
@@ -265,24 +266,24 @@
   (format t "unsigned eastasian_width(unicode c);~%")
   (format t "void init_eastasian(void);~2%"))
 
-(defun write-source-list ()
+(defun write-output-list ()
   (mapbind (x y z) *width-table*
     (format nil "~4T{  0x~6,'0X,  0x~6,'0X,  EastAsian_~A~43T}" x y z)))
 
-(defun write-source-table ()
+(defun write-output-table ()
   (format t "unsigned EastAsianSymbol[EastAsian_Size] = {~%")
   (format t "~4T0, 1, 2, 1, 2, 2, 1~%")
   (format t "};~2%")
   (format t "const struct eastasian_struct EastAsianTable[EastAsianTable_Size] = ")
-  (format t "{~%~{~A~^,~%~}~%};~%" (write-source-list)))
+  (format t "{~%~{~A~^,~%~}~%};~%" (write-output-list)))
 
-(defun write-source-group ()
+(defun write-output-group ()
   (mapfn (x) (group *width-ascii* 4)
     (format nil "~{EastAsian_~A~^, ~}" x)))
 
-(defun write-source-ascii ()
+(defun write-output-ascii ()
   (format t "const enum EastAsianType EastAsianAscii[0x80] = ")
-  (format t "{~%~{~4T~A~^,~%~}~%};~%" (write-source-group)))
+  (format t "{~%~{~4T~A~^,~%~}~%};~%" (write-output-group)))
 
 
 ;;
@@ -307,9 +308,13 @@
     " *  East Asian Width"
     " *    http://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt"
     " */"))
-(defun write-source-comment ()
+(defun write-output-comment ()
   (dolist (x +source-comment+)
     (format t "~A~%" x)))
+
+(defun write-output-include ()
+  (format t "#include \"eastasian.h\"~%")
+  (format t "#include <stddef.h>~2%"))
 
 (defun write-header ()
   (with-overwrite-file (*standard-output* +header+)
@@ -323,18 +328,28 @@
     (write-header-table)
     (format t "#endif~2%")))
 
-(defun write-source ()
-  (with-overwrite-file (*standard-output* +source+)
-    (write-source-comment)
-    (format t "#include \"eastasian.h\"~2%")
-    (write-source-table)
+(defun write-output-source ()
+  (terpri)
+  (format t "/*~%")
+  (format t " *  Source~%")
+  (format t " */~%")
+  (dolist (x (read-list +source+))
+    (write-line x)))
+
+(defun write-output ()
+  (with-overwrite-file (*standard-output* +output+)
+    (write-output-comment)
+    (write-output-include)
+    (write-output-table)
     (terpri)
-    (write-source-ascii)
-    (terpri)))
+    (write-output-ascii)
+    (terpri)
+    (write-output-source)
+    (fresh-line)))
 
 (defun main ()
   (read-width)
   (write-header)
-  (write-source))
+  (write-output))
 (main)
 

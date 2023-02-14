@@ -1,10 +1,10 @@
-object = eastasian_table.o eastasian.o main.o
+object = eastasian.o main.o
 
 #DEBUG =
 #DEFINE = -O3
 DEBUG = -DHYPD_DEBUG
 DEFINE =
-OPTIONS = -g -pedantic -Wall -I. -Iexample
+OPTIONS = -g -pedantic -Wall -I.. -I.
 CFLAGS = $(OPTIONS) $(DEFINE) $(DEBUG)
 a.out = a.out
 
@@ -14,5 +14,5 @@ $(a.out) : $(object)
 clean :
 	-rm -f $(a.out) $(object)
 
-main.o : example/main.c
+eastasian.o : ../eastasian.c
 
