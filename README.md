@@ -1,16 +1,10 @@
 Text tools.
 
 
-# base64
+# Develop
 
-- C
-  - [base64.c](develop/base64/base64.c)
-  - [base64.h](develop/base64/base64.h)
-- Common Lisp
-  - [base64.lisp](develop/base64/base64.lisp)
-- Example
-  - [example.c](develop/base64/example/example.c)
-  - [example.lisp](develop/base64/example/example.lisp)
+- [base64](develop/base64/)
+- [eastasian](develop/eastasian/)
 
 
 # License
