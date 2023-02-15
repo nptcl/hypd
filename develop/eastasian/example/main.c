@@ -24,7 +24,7 @@ int main(void)
 	EastAsianSymbol[EastAsian_H] = 300;
 	EastAsianSymbol[EastAsian_W] = 400;
 	EastAsianSymbol[EastAsian_F] = 500;
-	EastAsianSymbol[EastAsian_NA] = 600;
+	EastAsianSymbol[EastAsian_Na] = 600;
 
 	/* 00A9;N           # So         COPYRIGHT SIGN */
 	x = eastasian_width(0x00A9);

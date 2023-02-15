@@ -250,7 +250,7 @@
   (format t "~4TEastAsian_error,~%")
   (dobind (a . b) *width-symbol*
     (declare (ignore b))
-    (format t "~4TEastAsian_~A,~%" a))
+    (format t "~4TEastAsian_~:(~A~),~%" a))
   (format t "~4TEastAsian_Size~%};~2%")
   (format t "struct eastasian_struct {~%")
   (format t "~4Tunicode a, b;~%")
@@ -268,7 +268,7 @@
 
 (defun write-output-list ()
   (mapbind (x y z) *width-table*
-    (format nil "~4T{  0x~6,'0X,  0x~6,'0X,  EastAsian_~A~43T}" x y z)))
+    (format nil "~4T{  0x~6,'0X,  0x~6,'0X,  EastAsian_~:(~A~)~43T}" x y z)))
 
 (defun write-output-table ()
   (format t "unsigned EastAsianSymbol[EastAsian_Size] = {~%")
@@ -279,7 +279,7 @@
 
 (defun write-output-group ()
   (mapfn (x) (group *width-ascii* 4)
-    (format nil "~{EastAsian_~A~^, ~}" x)))
+    (format nil "~{EastAsian_~:(~A~)~^, ~}" x)))
 
 (defun write-output-ascii ()
   (format t "const enum EastAsianType EastAsianAscii[0x80] = ")

@@ -13,7 +13,7 @@ enum EastAsianType {
     EastAsian_H,
     EastAsian_W,
     EastAsian_F,
-    EastAsian_NA,
+    EastAsian_Na,
     EastAsian_Size
 };
 

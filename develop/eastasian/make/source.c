@@ -47,6 +47,6 @@ void init_eastasian(void)
 	EastAsianSymbol[EastAsian_H] = 1;
 	EastAsianSymbol[EastAsian_W] = 2;
 	EastAsianSymbol[EastAsian_F] = 2;
-	EastAsianSymbol[EastAsian_NA] = 1;
+	EastAsianSymbol[EastAsian_Na] = 1;
 }
 
