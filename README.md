@@ -5,6 +5,7 @@ Text tools.
 
 - [base64](develop/base64/)
 - [eastasian](develop/eastasian/)
+- [random](develop/random/)
 
 
 # License
