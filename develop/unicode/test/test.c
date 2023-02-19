@@ -1673,6 +1673,7 @@ static int test_fputc_utf8(void)
 	test(c == 0x10ABCD, "fputc_utf8.9");
 	test(fgetc_utf8(file, &c) == 0, "fputc_utf8.10");
 	test(c == -1, "fputc_utf8.11");
+	fclose(file);
 
 	return 0;
 }
