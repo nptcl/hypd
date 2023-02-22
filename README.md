@@ -7,6 +7,7 @@ Text tools.
 - [eastasian](develop/eastasian/)
 - [random](develop/random/)
 - [unicode](develop/unicode/)
+- [deflate](develop/deflate/)  [Incomplete]
 
 
 # License
