@@ -10,7 +10,8 @@ checkerr()
 
 aout="a.out"
 
-cd ../
+cd ../example/
+checkerr "cd example error"
 
 make clean
 checkerr "make clean error"
@@ -18,7 +19,7 @@ checkerr "make clean error"
 make
 checkerr "make error"
 
-cp ${aout} test/.
+cp ${aout} ../test/.
 checkerr "cp error"
 
 make clean
