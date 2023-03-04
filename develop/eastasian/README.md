@@ -1,15 +1,13 @@
 Get Unicode EastAsian Width.
 
 
-# File
+# C
 
 - Source
   - [eastasian.c](eastasian.c)
   - [eastasian.h](eastasian.h)
   - [unicode.h](unicode.h)
 
-
-# Example
 
 ```c
 /* Get width */
@@ -22,7 +20,22 @@ y = eastasian_symbol(0x3042);  /* y is EastAsian_W. */
 ```
 
 
-# Distribution
+# Common Lisp
 
+- Source
+  - [eastasian.lisp](eastasian.lisp)
+
+
+```lisp
+* (load "eastasian.lisp")
+T
+* (eastasian:eastasian-width #x3042)
+2
+* (eastasian:eastasian-symbol #x3042)
+EASTASIAN:EASTASIAN-W
+```
+
+
+# Distribution
 [https://github.com/nptcl/hypd](https://github.com/nptcl/hypd)
 
