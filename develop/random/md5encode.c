@@ -39,7 +39,7 @@ static const uint32_t Md5Encode_CalcT[64 + 1] = {
 #define Md5Encode_CalcH(x,y,z) ((x) ^ (y) ^ (z))
 #define Md5Encode_CalcI(x,y,z) ((y) ^ ((x) | (~(z))))
 #define Md5Encode_CalcR32(v,s) (((v) << (s)) | ((v) >> (32 - (s))))
-#define Md5Encode_Calc(op,a,b,c,d,k,s,i) { \
+#define Md5Encode_Calc(op,x,a,b,c,d,k,s,i) { \
 	a += Md5Encode_Calc##op(b,c,d) + x[k] + Md5Encode_CalcT[i]; \
 	a = Md5Encode_CalcR32(a, s); \
 	a += b; \
@@ -66,76 +66,76 @@ static void calcblock_md5encode(struct md5encode *ptr)
 	x = ptr->x;
 
 	/* Round 1. */
-	Md5Encode_Calc(F, a,b,c,d,  0,  7,  1);
-	Md5Encode_Calc(F, d,a,b,c,  1, 12,  2);
-	Md5Encode_Calc(F, c,d,a,b,  2, 17,  3);
-	Md5Encode_Calc(F, b,c,d,a,  3, 22,  4);
-	Md5Encode_Calc(F, a,b,c,d,  4,  7,  5);
-	Md5Encode_Calc(F, d,a,b,c,  5, 12,  6);
-	Md5Encode_Calc(F, c,d,a,b,  6, 17,  7);
-	Md5Encode_Calc(F, b,c,d,a,  7, 22,  8);
-	Md5Encode_Calc(F, a,b,c,d,  8,  7,  9);
-	Md5Encode_Calc(F, d,a,b,c,  9, 12, 10);
-	Md5Encode_Calc(F, c,d,a,b, 10, 17, 11);
-	Md5Encode_Calc(F, b,c,d,a, 11, 22, 12);
-	Md5Encode_Calc(F, a,b,c,d, 12,  7, 13);
-	Md5Encode_Calc(F, d,a,b,c, 13, 12, 14);
-	Md5Encode_Calc(F, c,d,a,b, 14, 17, 15);
-	Md5Encode_Calc(F, b,c,d,a, 15, 22, 16);
+	Md5Encode_Calc(F,x, a,b,c,d,  0,  7,  1);
+	Md5Encode_Calc(F,x, d,a,b,c,  1, 12,  2);
+	Md5Encode_Calc(F,x, c,d,a,b,  2, 17,  3);
+	Md5Encode_Calc(F,x, b,c,d,a,  3, 22,  4);
+	Md5Encode_Calc(F,x, a,b,c,d,  4,  7,  5);
+	Md5Encode_Calc(F,x, d,a,b,c,  5, 12,  6);
+	Md5Encode_Calc(F,x, c,d,a,b,  6, 17,  7);
+	Md5Encode_Calc(F,x, b,c,d,a,  7, 22,  8);
+	Md5Encode_Calc(F,x, a,b,c,d,  8,  7,  9);
+	Md5Encode_Calc(F,x, d,a,b,c,  9, 12, 10);
+	Md5Encode_Calc(F,x, c,d,a,b, 10, 17, 11);
+	Md5Encode_Calc(F,x, b,c,d,a, 11, 22, 12);
+	Md5Encode_Calc(F,x, a,b,c,d, 12,  7, 13);
+	Md5Encode_Calc(F,x, d,a,b,c, 13, 12, 14);
+	Md5Encode_Calc(F,x, c,d,a,b, 14, 17, 15);
+	Md5Encode_Calc(F,x, b,c,d,a, 15, 22, 16);
 
 	/* Round 2. */
-	Md5Encode_Calc(G, a,b,c,d,  1,  5, 17);
-	Md5Encode_Calc(G, d,a,b,c,  6,  9, 18);
-	Md5Encode_Calc(G, c,d,a,b, 11, 14, 19);
-	Md5Encode_Calc(G, b,c,d,a,  0, 20, 20);
-	Md5Encode_Calc(G, a,b,c,d,  5,  5, 21);
-	Md5Encode_Calc(G, d,a,b,c, 10,  9, 22);
-	Md5Encode_Calc(G, c,d,a,b, 15, 14, 23);
-	Md5Encode_Calc(G, b,c,d,a,  4, 20, 24);
-	Md5Encode_Calc(G, a,b,c,d,  9,  5, 25);
-	Md5Encode_Calc(G, d,a,b,c, 14,  9, 26);
-	Md5Encode_Calc(G, c,d,a,b,  3, 14, 27);
-	Md5Encode_Calc(G, b,c,d,a,  8, 20, 28);
-	Md5Encode_Calc(G, a,b,c,d, 13,  5, 29);
-	Md5Encode_Calc(G, d,a,b,c,  2,  9, 30);
-	Md5Encode_Calc(G, c,d,a,b,  7, 14, 31);
-	Md5Encode_Calc(G, b,c,d,a, 12, 20, 32);
+	Md5Encode_Calc(G,x, a,b,c,d,  1,  5, 17);
+	Md5Encode_Calc(G,x, d,a,b,c,  6,  9, 18);
+	Md5Encode_Calc(G,x, c,d,a,b, 11, 14, 19);
+	Md5Encode_Calc(G,x, b,c,d,a,  0, 20, 20);
+	Md5Encode_Calc(G,x, a,b,c,d,  5,  5, 21);
+	Md5Encode_Calc(G,x, d,a,b,c, 10,  9, 22);
+	Md5Encode_Calc(G,x, c,d,a,b, 15, 14, 23);
+	Md5Encode_Calc(G,x, b,c,d,a,  4, 20, 24);
+	Md5Encode_Calc(G,x, a,b,c,d,  9,  5, 25);
+	Md5Encode_Calc(G,x, d,a,b,c, 14,  9, 26);
+	Md5Encode_Calc(G,x, c,d,a,b,  3, 14, 27);
+	Md5Encode_Calc(G,x, b,c,d,a,  8, 20, 28);
+	Md5Encode_Calc(G,x, a,b,c,d, 13,  5, 29);
+	Md5Encode_Calc(G,x, d,a,b,c,  2,  9, 30);
+	Md5Encode_Calc(G,x, c,d,a,b,  7, 14, 31);
+	Md5Encode_Calc(G,x, b,c,d,a, 12, 20, 32);
 
 	/* Round 3. */
-	Md5Encode_Calc(H, a,b,c,d,  5,  4, 33);
-	Md5Encode_Calc(H, d,a,b,c,  8, 11, 34);
-	Md5Encode_Calc(H, c,d,a,b, 11, 16, 35);
-	Md5Encode_Calc(H, b,c,d,a, 14, 23, 36);
-	Md5Encode_Calc(H, a,b,c,d,  1,  4, 37);
-	Md5Encode_Calc(H, d,a,b,c,  4, 11, 38);
-	Md5Encode_Calc(H, c,d,a,b,  7, 16, 39);
-	Md5Encode_Calc(H, b,c,d,a, 10, 23, 40);
-	Md5Encode_Calc(H, a,b,c,d, 13,  4, 41);
-	Md5Encode_Calc(H, d,a,b,c,  0, 11, 42);
-	Md5Encode_Calc(H, c,d,a,b,  3, 16, 43);
-	Md5Encode_Calc(H, b,c,d,a,  6, 23, 44);
-	Md5Encode_Calc(H, a,b,c,d,  9,  4, 45);
-	Md5Encode_Calc(H, d,a,b,c, 12, 11, 46);
-	Md5Encode_Calc(H, c,d,a,b, 15, 16, 47);
-	Md5Encode_Calc(H, b,c,d,a,  2, 23, 48);
+	Md5Encode_Calc(H,x, a,b,c,d,  5,  4, 33);
+	Md5Encode_Calc(H,x, d,a,b,c,  8, 11, 34);
+	Md5Encode_Calc(H,x, c,d,a,b, 11, 16, 35);
+	Md5Encode_Calc(H,x, b,c,d,a, 14, 23, 36);
+	Md5Encode_Calc(H,x, a,b,c,d,  1,  4, 37);
+	Md5Encode_Calc(H,x, d,a,b,c,  4, 11, 38);
+	Md5Encode_Calc(H,x, c,d,a,b,  7, 16, 39);
+	Md5Encode_Calc(H,x, b,c,d,a, 10, 23, 40);
+	Md5Encode_Calc(H,x, a,b,c,d, 13,  4, 41);
+	Md5Encode_Calc(H,x, d,a,b,c,  0, 11, 42);
+	Md5Encode_Calc(H,x, c,d,a,b,  3, 16, 43);
+	Md5Encode_Calc(H,x, b,c,d,a,  6, 23, 44);
+	Md5Encode_Calc(H,x, a,b,c,d,  9,  4, 45);
+	Md5Encode_Calc(H,x, d,a,b,c, 12, 11, 46);
+	Md5Encode_Calc(H,x, c,d,a,b, 15, 16, 47);
+	Md5Encode_Calc(H,x, b,c,d,a,  2, 23, 48);
 
 	/* Round 4. */
-	Md5Encode_Calc(I, a,b,c,d,  0,  6, 49);
-	Md5Encode_Calc(I, d,a,b,c,  7, 10, 50);
-	Md5Encode_Calc(I, c,d,a,b, 14, 15, 51);
-	Md5Encode_Calc(I, b,c,d,a,  5, 21, 52);
-	Md5Encode_Calc(I, a,b,c,d, 12,  6, 53);
-	Md5Encode_Calc(I, d,a,b,c,  3, 10, 54);
-	Md5Encode_Calc(I, c,d,a,b, 10, 15, 55);
-	Md5Encode_Calc(I, b,c,d,a,  1, 21, 56);
-	Md5Encode_Calc(I, a,b,c,d,  8,  6, 57);
-	Md5Encode_Calc(I, d,a,b,c, 15, 10, 58);
-	Md5Encode_Calc(I, c,d,a,b,  6, 15, 59);
-	Md5Encode_Calc(I, b,c,d,a, 13, 21, 60);
-	Md5Encode_Calc(I, a,b,c,d,  4,  6, 61);
-	Md5Encode_Calc(I, d,a,b,c, 11, 10, 62);
-	Md5Encode_Calc(I, c,d,a,b,  2, 15, 63);
-	Md5Encode_Calc(I, b,c,d,a,  9, 21, 64);
+	Md5Encode_Calc(I,x, a,b,c,d,  0,  6, 49);
+	Md5Encode_Calc(I,x, d,a,b,c,  7, 10, 50);
+	Md5Encode_Calc(I,x, c,d,a,b, 14, 15, 51);
+	Md5Encode_Calc(I,x, b,c,d,a,  5, 21, 52);
+	Md5Encode_Calc(I,x, a,b,c,d, 12,  6, 53);
+	Md5Encode_Calc(I,x, d,a,b,c,  3, 10, 54);
+	Md5Encode_Calc(I,x, c,d,a,b, 10, 15, 55);
+	Md5Encode_Calc(I,x, b,c,d,a,  1, 21, 56);
+	Md5Encode_Calc(I,x, a,b,c,d,  8,  6, 57);
+	Md5Encode_Calc(I,x, d,a,b,c, 15, 10, 58);
+	Md5Encode_Calc(I,x, c,d,a,b,  6, 15, 59);
+	Md5Encode_Calc(I,x, b,c,d,a, 13, 21, 60);
+	Md5Encode_Calc(I,x, a,b,c,d,  4,  6, 61);
+	Md5Encode_Calc(I,x, d,a,b,c, 11, 10, 62);
+	Md5Encode_Calc(I,x, c,d,a,b,  2, 15, 63);
+	Md5Encode_Calc(I,x, b,c,d,a,  9, 21, 64);
 
 	ptr->a += a;
 	ptr->b += b;
@@ -159,13 +159,14 @@ void read_md5encode(struct md5encode *ptr, const void *from, size_t len)
 	j = pos / 4;
 	k = pos % 4;
 	byte = (const uint8_t *)from;
-	for (i = 0;  i < len; i++) {
+	for (i = 0; i < len; i++) {
 		if (64 <= pos) {
 			calcblock_md5encode(ptr);
 			pos = 0;
 			j = k = 0;
 		}
-		if (k == 0) x[j] = 0;
+		if (k == 0)
+			x[j] = 0;
 		x[j] |= byte[i] << (8 * k);
 		k++;
 		if (4 <= k) {
@@ -194,9 +195,8 @@ static void calcfinal_md5encode(struct md5encode *ptr)
 
 	/* padding */
 	size = ptr->size;
+	padding[0] = 0x80;
 	len = 64 - ((size + 8) % 64);
-	if (len != 0)
-		padding[0] = 0x80;
 	for (pos = 1; pos < len; pos++)
 		padding[pos] = 0;
 	padding[pos++] = 0xFF & (size << 3);
