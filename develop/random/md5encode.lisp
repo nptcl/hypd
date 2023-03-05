@@ -21,6 +21,7 @@
     #:md5encode-error
     #:+md5encode-size+
     #:md5encode
+    #:md5encode-p
     #:make-md5encode
     #:copy-md5encode
     #:clear-md5encode

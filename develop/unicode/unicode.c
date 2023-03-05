@@ -61,8 +61,7 @@ sequence2:
 sequence2_1:
 	if (c < 0x80 || 0xBF < c)
 		goto error_unicode;
-	v = ptr->value | (0x3F & c);
-	*ret = v;
+	*ret = ptr->value | (0x3F & c);
 	ptr->state = 0;
 	return 1;
 
@@ -84,7 +83,7 @@ sequence3_2:
 	v = ptr->value | (0x3F & c);
 	if (v < 0x0800)
 		goto error_range;
-	if (0xD800 <= v && v < 0xE000)
+	if (0xD800 <= v && v <= 0xDFFF)
 		goto error_surrogate;
 	*ret = v;
 	ptr->state = 0;
