@@ -240,12 +240,12 @@ int decode_utf16(struct state_utf16 *ptr, uint16_t c, unicode *ret)
 	}
 
 sequence0:
-	if (0xD800 <= c && c < 0xDC00) {
+	if (0xD800 <= c && c <= 0xDBFF) {
 		ptr->value = c;
 		ptr->state = 1;
 		return 0;
 	}
-	if (0xDC00 <= c && c < 0xE000)
+	if (0xDC00 <= c && c <= 0xDFFF)
 		goto error_first;
 	*ret = (unicode)c;
 	ptr->state = 0;
@@ -307,7 +307,7 @@ int encode_utf16(unicode c, uint16_t *dst, int *ret)
 
 	/* 4 byte */
 	if (c < 0x110000) {
-		x = ((((c >> 16) & 0x1F) - 1) << 6) | (0x3F & (c >> 10));
+		x = ((((c >> 16) & 0x1F) - 1) << 6) | ((c >> 10) & 0x3F);
 		dst[0] = 0xD800 | x;
 		dst[1] = 0xDC00 | (0x03FF & c);
 		*ret = 2;
