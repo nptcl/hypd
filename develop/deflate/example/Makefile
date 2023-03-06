@@ -9,10 +9,10 @@ example_gzip.o \
 example_zlib.o \
 main.o
 
-DEBUG =
-DEFINE = -O3
-#DEBUG = -DHYPD_DEBUG
-#DEFINE = -DHYPD_INFO
+#DEBUG =
+#DEFINE = -O3
+DEBUG = -DHYPD_DEBUG
+DEFINE = -DHYPD_INFO
 OPTIONS = -g -pedantic -Wall -I. -I.. -I../format/
 CFLAGS = $(OPTIONS) $(DEFINE) $(DEBUG)
 a.out = a.out

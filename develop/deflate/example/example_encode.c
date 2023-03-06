@@ -113,10 +113,8 @@ static int deflate_FILE_execute(struct deflate_stdio *io)
 			DeflateError("encode error.");
 			return -1;
 		}
-		if (deflate_final(instance))
-			break;
 		if (check == 0)
-			continue;
+			break;
 
 		/* read */
 		if (instance->input_call) {

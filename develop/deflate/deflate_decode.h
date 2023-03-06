@@ -49,7 +49,7 @@ enum inflate_state {
 	Inflate_decode,
 	Inflate_flush,
 	Inflate_final,
-	Inflate_error
+	Inflate_failed
 };
 
 struct inflate_node {
@@ -105,7 +105,6 @@ void *inflate_output(struct inflate *decode,
 		void *ptr, size_t size, size_t *ret);
 int inflate_alignment(struct inflate *decode);
 int inflate_execute(struct inflate *decode);
-int inflate_final(struct inflate *decode);
 int inflate_restart(struct inflate *decode);
 
 

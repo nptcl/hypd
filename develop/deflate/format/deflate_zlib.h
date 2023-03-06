@@ -24,7 +24,7 @@ enum zlib_decode_state {
 	ZlibDecode_adler32,
 	ZlibDecode_flush,
 	ZlibDecode_final,
-	ZlibDecode_error
+	ZlibDecode_failed
 };
 
 struct zlib_decode {
@@ -47,7 +47,6 @@ const void *zlib_decode_input(struct zlib_decode *inst,
 void *zlib_decode_output(struct zlib_decode *inst,
 		void *ptr, size_t size, size_t *ret);
 int zlib_decode_execute(struct zlib_decode *inst);
-int zlib_decode_final(struct zlib_decode *inst);
 int zlib_decode_restart(struct zlib_decode *inst);
 
 
@@ -62,7 +61,7 @@ enum zlib_encode_state {
 	ZlibEncode_adler32,
 	ZlibEncode_flush,
 	ZlibEncode_final,
-	ZlibEncode_error
+	ZlibEncode_failed
 };
 
 struct zlib_encode {
@@ -82,7 +81,6 @@ void *zlib_encode_output(struct zlib_encode *inst,
 		void *ptr, size_t size, size_t *ret);
 int zlib_encode_execute(struct zlib_encode *inst);
 int zlib_encode_break(struct zlib_encode *inst);
-int zlib_encode_final(struct zlib_encode *inst);
 int zlib_encode_restart(struct zlib_encode *inst);
 
 #endif

@@ -414,7 +414,7 @@ static int inflate_header(struct inflate *decode)
 			break;
 
 		default: /* error */
-			decode->state = Inflate_error;
+			decode->state = Inflate_failed;
 			return -1;
 	}
 
@@ -1747,13 +1747,13 @@ static int inflate_flush(struct inflate *decode)
 /*
  *  Interface
  */
-static int inflate_final_call(struct inflate *decode)
+static int inflate_final(struct inflate *decode)
 {
 	InflateState("final");
 	return 0;
 }
 
-static int inflate_error_call(struct inflate *decode)
+static int inflate_failed(struct inflate *decode)
 {
 	InflateState("error");
 	return -1;
@@ -1772,33 +1772,37 @@ static inflate_state_call inflate_state_array[] = {
 	inflate_dynamic_value,
 	inflate_decode,
 	inflate_flush,
-	inflate_final_call,
-	inflate_error_call
+	inflate_final,
+	inflate_failed
 };
 
 int inflate_execute(struct inflate *decode)
 {
-	int index, check;
+	int check;
 	inflate_state_call call;
 
 #ifdef HYPD_DEBUG
-	call = inflate_state_array[Inflate_error];
-	InflateDebug(call != inflate_error_call, "call error.");
+	call = inflate_state_array[Inflate_failed];
+	InflateDebug(call != inflate_failed, "call error.");
 #endif
-	decode->input_call = 0;
-	decode->output_call = 0;
-	index = (int)decode->state;
-	call = inflate_state_array[index];
-	check = (*call)(decode);
-	if (check < 0)
-		decode->state = Inflate_error;
+	do {
+		/* call */
+		decode->input_call = 0;
+		decode->output_call = 0;
+		call = inflate_state_array[decode->state];
+		check = (*call)(decode);
 
-	return check;
-}
+		/* result */
+		if (check < 0) {
+			decode->state = Inflate_failed;
+			return -1;
+		}
+		if (check)
+			return 1;
+	}
+	while (decode->state != Inflate_final);
 
-int inflate_final(struct inflate *decode)
-{
-	return decode->state == Inflate_final;
+	return 0;
 }
 
 int inflate_restart(struct inflate *decode)

@@ -247,8 +247,6 @@ static int zlib_decode_inflate(struct zlib_decode *inst)
 	}
 	if (check)
 		return 1;
-	if (! inflate_final(decode))
-		return 0;
 
 	/* next */
 	decode->output_callback = NULL;
@@ -310,11 +308,6 @@ static int zlib_decode_flush(struct zlib_decode *inst)
 	return 0;
 }
 
-int zlib_decode_final(struct zlib_decode *inst)
-{
-	return inst->state == ZlibDecode_final;
-}
-
 int zlib_decode_restart(struct zlib_decode *inst)
 {
 	struct inflate *decode;
@@ -364,7 +357,7 @@ static int zlib_decode_state(struct zlib_decode *inst)
 		case ZlibDecode_final:
 			return 0;
 
-		case ZlibDecode_error:
+		case ZlibDecode_failed:
 		default:
 			return -1;
 	}
@@ -377,15 +370,20 @@ int zlib_decode_execute(struct zlib_decode *inst)
 
 	/* call */
 	decode = &(inst->decode);
-	decode->input_call = 0;
-	decode->output_call = 0;
+	do {
+		decode->input_call = 0;
+		decode->output_call = 0;
+		check = zlib_decode_state(inst);
+		if (check < 0) {
+			inst->state = ZlibDecode_failed;
+			return -1;
+		}
+		if (check)
+			return 1;
+	}
+	while (inst->state != ZlibDecode_final);
 
-	/* state */
-	check = zlib_decode_state(inst);
-	if (check < 0)
-		inst->state = ZlibDecode_error;
-
-	return check;
+	return 0;
 }
 
 
@@ -587,8 +585,6 @@ static int zlib_encode_deflate(struct zlib_encode *inst)
 	}
 	if (check)
 		return check;
-	if (! deflate_final(encode))
-		return 0;
 
 	/* next */
 	encode->input_callback = NULL;
@@ -664,7 +660,7 @@ static int zlib_encode_state(struct zlib_encode *inst)
 		case ZlibEncode_final:
 			return 0;
 
-		case ZlibEncode_error:
+		case ZlibEncode_failed:
 		default:
 			return -1;
 	}
@@ -673,22 +669,28 @@ static int zlib_encode_state(struct zlib_encode *inst)
 int zlib_encode_execute(struct zlib_encode *inst)
 {
 	int check;
+	struct deflate *encode;
 
-	check = zlib_encode_state(inst);
-	if (check < 0)
-		inst->state = ZlibEncode_error;
+	encode = &(inst->encode);
+	do {
+		encode->input_call = 0;
+		encode->output_call = 0;
+		check = zlib_encode_state(inst);
+		if (check < 0) {
+			inst->state = ZlibEncode_failed;
+			return -1;
+		}
+		if (check)
+			return 1;
+	}
+	while (inst->state != ZlibEncode_final);
 
-	return check;
+	return 0;
 }
 
 int zlib_encode_break(struct zlib_encode *inst)
 {
 	return deflate_break(&(inst->encode));
-}
-
-int zlib_encode_final(struct zlib_encode *inst)
-{
-	return inst->state == ZlibEncode_final;
 }
 
 int zlib_encode_restart(struct zlib_encode *inst)

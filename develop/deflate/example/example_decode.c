@@ -87,10 +87,8 @@ static int inflate_FILE_execute(struct inflate_stdio *io)
 			InflateError("decode error.");
 			return -1;
 		}
-		if (inflate_final(instance))
-			break;
 		if (check == 0)
-			continue;
+			break;
 
 		/* read */
 		if (instance->input_call) {

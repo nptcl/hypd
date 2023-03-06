@@ -535,8 +535,6 @@ static int gzip_decode_inflate(struct gzip_decode *inst)
 	}
 	if (check)
 		return 1;
-	if (! inflate_final(decode))
-		return 0;
 
 	/* next */
 	decode->output_callback = NULL;
@@ -623,11 +621,6 @@ static int gzip_decode_flush(struct gzip_decode *inst)
 	return 0;
 }
 
-int gzip_decode_final(struct gzip_decode *inst)
-{
-	return inst->state == GzipDecode_final;
-}
-
 int gzip_decode_restart(struct gzip_decode *inst)
 {
 	struct inflate *decode;
@@ -692,7 +685,7 @@ static int gzip_decode_state(struct gzip_decode *inst)
 		case GzipDecode_final:
 			return 0;
 
-		case GzipDecode_error:
+		case GzipDecode_failed:
 		default:
 			return -1;
 	}
@@ -703,17 +696,21 @@ int gzip_decode_execute(struct gzip_decode *inst)
 	int check;
 	struct inflate *decode;
 
-	/* call */
 	decode = &(inst->decode);
-	decode->input_call = 0;
-	decode->output_call = 0;
+	do {
+		decode->input_call = 0;
+		decode->output_call = 0;
+		check = gzip_decode_state(inst);
+		if (check < 0) {
+			inst->state = GzipDecode_failed;
+			return -1;
+		}
+		if (check)
+			return 1;
+	}
+	while (inst->state != GzipDecode_final);
 
-	/* state */
-	check = gzip_decode_state(inst);
-	if (check < 0)
-		inst->state = GzipDecode_error;
-
-	return check;
+	return 0;
 }
 
 
@@ -988,8 +985,6 @@ static int gzip_encode_deflate(struct gzip_encode *inst)
 	}
 	if (check)
 		return 1;
-	if (! deflate_final(encode))
-		return 0;
 
 	/* next */
 	encode->input_callback = NULL;
@@ -1086,7 +1081,7 @@ int gzip_encode_state(struct gzip_encode *inst)
 		case GzipEncode_flush:
 			return gzip_encode_flush(inst);
 
-		case GzipEncode_error:
+		case GzipEncode_failed:
 		default:
 			return -1;
 	}
@@ -1098,27 +1093,26 @@ int gzip_encode_execute(struct gzip_encode *inst)
 	int check;
 	struct deflate *encode;
 
-	/* call */
 	encode = &(inst->encode);
-	encode->input_call = 0;
-	encode->output_call = 0;
+	do {
+		encode->input_call = 0;
+		encode->output_call = 0;
+		check = gzip_encode_state(inst);
+		if (check < 0) {
+			inst->state = GzipEncode_failed;
+			return -1;
+		}
+		if (check)
+			return 1;
+	}
+	while (inst->state != GzipEncode_final);
 
-	/* state */
-	check = gzip_encode_state(inst);
-	if (check < 0)
-		inst->state = GzipEncode_error;
-
-	return check;
+	return 0;
 }
 
 int gzip_encode_break(struct gzip_encode *inst)
 {
 	return deflate_break(&(inst->encode));
-}
-
-int gzip_encode_final(struct gzip_encode *inst)
-{
-	return inst->state == GzipEncode_final;
 }
 
 int gzip_encode_restart(struct gzip_encode *inst)

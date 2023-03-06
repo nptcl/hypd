@@ -90,10 +90,8 @@ static int zlib_decode_FILE_execute(struct zlib_decode_stdio *io)
 			ZlibError("decode error.");
 			return -1;
 		}
-		if (zlib_decode_final(instance))
-			break;
 		if (check == 0)
-			continue;
+			break;
 
 		/* read */
 		if (decode->input_call) {
@@ -241,10 +239,8 @@ static int zlib_encode_FILE_execute(struct zlib_encode_stdio *io)
 			ZlibError("encode error.");
 			return -1;
 		}
-		if (zlib_encode_final(instance))
-			break;
 		if (check == 0)
-			continue;
+			break;
 
 		/* read */
 		if (encode->input_call) {

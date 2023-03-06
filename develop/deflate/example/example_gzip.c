@@ -90,10 +90,8 @@ static int gzip_decode_FILE_execute(struct gzip_decode_stdio *io)
 			GzipError("decode error.");
 			return -1;
 		}
-		if (gzip_decode_final(instance))
-			break;
 		if (check == 0)
-			continue;
+			break;
 
 		/* read */
 		if (decode->input_call) {
@@ -300,10 +298,8 @@ static int gzip_encode_FILE_execute(struct gzip_encode_stdio *io)
 			GzipError("encode error.");
 			return -1;
 		}
-		if (gzip_encode_final(instance))
-			break;
 		if (check == 0)
-			continue;
+			break;
 
 		/* read */
 		if (encode->input_call) {

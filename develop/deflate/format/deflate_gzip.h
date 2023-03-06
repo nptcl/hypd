@@ -25,7 +25,7 @@ enum gzip_decode_state {
 	GzipDecode_size,
 	GzipDecode_flush,
 	GzipDecode_final,
-	GzipDecode_error
+	GzipDecode_failed
 };
 
 struct gzip_decode {
@@ -52,7 +52,6 @@ const void *gzip_decode_input(struct gzip_decode *inst,
 void *gzip_decode_output(struct gzip_decode *inst,
 		void *ptr, size_t size, size_t *ret);
 int gzip_decode_execute(struct gzip_decode *inst);
-int gzip_decode_final(struct gzip_decode *inst);
 int gzip_decode_restart(struct gzip_decode *inst);
 
 
@@ -69,7 +68,7 @@ enum gzip_encode_state {
 	GzipEncode_size,
 	GzipEncode_flush,
 	GzipEncode_final,
-	GzipEncode_error
+	GzipEncode_failed
 };
 
 struct gzip_encode {
@@ -93,7 +92,6 @@ void *gzip_encode_output(struct gzip_encode *inst,
 		void *ptr, size_t size, size_t *ret);
 int gzip_encode_execute(struct gzip_encode *inst);
 int gzip_encode_break(struct gzip_encode *inst);
-int gzip_encode_final(struct gzip_encode *inst);
 int gzip_encode_restart(struct gzip_encode *inst);
 
 #endif

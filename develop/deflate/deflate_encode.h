@@ -25,7 +25,13 @@
 
 #define DEFLATE_PLANE			0x008000
 #define DEFLATE_LZ77			0x008000
-#define DEFLATE_WORK			0x010000
+#define DEFLATE_CODE			0x010000
+
+#ifdef HYPD_DEBUG
+#define DEFLATE_HASH			100
+#else
+#define DEFLATE_HASH			0x010000
+#endif
 
 #define DEFLATE_HUFFMAN_CODE1	286
 #define DEFLATE_HUFFMAN_CODE2	30
@@ -38,9 +44,16 @@ enum deflate_state {
 	Deflate_plane_loop,
 	Deflate_plane_header,
 	Deflate_plane_data,
+	Deflate_fixed,
+	Deflate_fixed_header,
+	Deflate_fixed_encode,
+	Deflate_dynamic,
+	Deflate_dynamic_loop,
+	Deflate_dynamic_header,
+	Deflate_dynamic_encode,
 	Deflate_flush,
 	Deflate_final,
-	Deflate_error
+	Deflate_failed
 };
 
 enum deflate_mode {
@@ -53,9 +66,20 @@ enum deflate_mode {
 };
 
 struct deflate_huffman {
-	unsigned size : 6;
-	unsigned code : 10;
-	uint16_t huffman;
+	unsigned size : 4;			/* 0...15 */
+	unsigned code : 15;			/* 0...(expt 2 15) */
+};
+
+struct deflate_hash {
+	unsigned enable : 1;
+	uint8_t key[3];
+	size_t position;
+};
+
+struct deflate_code {
+	unsigned code_p : 1;		/* code or lz77 */
+	unsigned code : 8;			/* 0 ... 255 */
+	unsigned distance : 15;		/* 0...(expt 2 15) */
 };
 
 typedef void (*deflate_callback)(void *, uint8_t);
@@ -69,8 +93,7 @@ struct deflate {
 	uint8_t input[DEFLATE_RING1];
 	uint8_t output[DEFLATE_RING2];
 	uint8_t lz77[DEFLATE_LZ77];
-	uint8_t work[DEFLATE_WORK];
-	uint8_t outputv;
+	uint8_t outputv, input1, input2;
 	unsigned state_index;
 	unsigned inputa, inputb, inputc;
 	unsigned outputa, outputb, outputc, outputx;
@@ -80,9 +103,11 @@ struct deflate {
 	enum deflate_state state;
 	deflate_callback input_callback;
 	void *input_instance;
+	size_t position;
 	struct deflate_huffman node1[DEFLATE_HUFFMAN_CODE1];
 	struct deflate_huffman node2[DEFLATE_HUFFMAN_CODE2];
-	struct deflate_huffman *node;
+	struct deflate_hash hash[DEFLATE_HASH];
+	struct deflate_code code[DEFLATE_CODE];
 };
 
 
@@ -97,7 +122,6 @@ void *deflate_output(struct deflate *encode,
 int deflate_alignment(struct deflate *encode);
 int deflate_execute(struct deflate *encode);
 int deflate_break(struct deflate *encode);
-int deflate_final(struct deflate *encode);
 int deflate_restart(struct deflate *encode);
 
 
