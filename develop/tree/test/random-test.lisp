@@ -1,12 +1,14 @@
 (cl:in-package common-lisp-user)
 (load #p"avltree.lisp")
+(load #p"avlptree.lisp")
 (load #p"bintree.lisp")
 (load #p"rbtree.lisp")
 (load #p"test/avltree-check.lisp")
+(load #p"test/avlptree-check.lisp")
 (load #p"test/bintree-check.lisp")
 (load #p"test/rbtree-check.lisp")
 
-(defpackage work (:use common-lisp bintree avltree rbtree))
+(defpackage work (:use common-lisp bintree avltree avlptree rbtree))
 (in-package work)
 
 ;;
@@ -25,6 +27,8 @@
   (clear-bintree inst))
 (defmethod clear-calltree ((inst avltree))
   (clear-avltree inst))
+(defmethod clear-calltree ((inst avlptree))
+  (clear-avlptree inst))
 (defmethod clear-calltree ((inst rbtree))
   (clear-rbtree inst))
 
@@ -33,6 +37,8 @@
   (insert-bintree inst key value))
 (defmethod insert-calltree ((inst avltree) key value)
   (insert-avltree inst key value))
+(defmethod insert-calltree ((inst avlptree) key value)
+  (insert-avlptree inst key value))
 (defmethod insert-calltree ((inst rbtree) key value)
   (insert-rbtree inst key value))
 
@@ -41,6 +47,8 @@
   (delete-bintree inst key))
 (defmethod delete-calltree ((inst avltree) key)
   (delete-avltree inst key))
+(defmethod delete-calltree ((inst avlptree) key)
+  (delete-avlptree inst key))
 (defmethod delete-calltree ((inst rbtree) key)
   (delete-rbtree inst key))
 
@@ -49,6 +57,8 @@
   (search-bintree inst key))
 (defmethod search-calltree ((inst avltree) key)
   (search-avltree inst key))
+(defmethod search-calltree ((inst avlptree) key)
+  (search-avlptree inst key))
 (defmethod search-calltree ((inst rbtree) key)
   (search-rbtree inst key))
 
@@ -57,6 +67,8 @@
   (map-bintree call inst))
 (defmethod map-calltree (call (inst avltree))
   (map-avltree call inst))
+(defmethod map-calltree (call (inst avlptree))
+  (map-avlptree call inst))
 (defmethod map-calltree (call (inst rbtree))
   (map-rbtree call inst))
 
@@ -65,6 +77,8 @@
   (check-bintree-error inst))
 (defmethod check-calltree-error ((inst avltree))
   (check-avltree-error inst))
+(defmethod check-calltree-error ((inst avlptree))
+  (check-avlptree-error inst))
 (defmethod check-calltree-error ((inst rbtree))
   (check-rbtree-error inst))
 
@@ -140,13 +154,17 @@
 
 (defun insert-delete-random (size left right)
   (let ((x (make-bintree))
-        (y (make-avltree))
-        (z (make-rbtree))
+        (y1 (make-avltree))
+        (y2 (make-avlptree))
+        (y3 (make-rbtree))
         (array1 (make-random-array size left))
         (array2 (make-random-array size right)))
-    (insert-delete-testcall size x y array1 array2)
+    (insert-delete-testcall size x y1 array1 array2)
     (clear-calltree x)
-    (insert-delete-testcall size x z array1 array2)))
+    (insert-delete-testcall size x y2 array1 array2)
+    (clear-calltree x)
+    (insert-delete-testcall size x y3 array1 array2)
+    (clear-calltree x)))
 
 (defun cross-product (list1 list2)
   (let (list)
