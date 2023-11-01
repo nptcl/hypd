@@ -1,4 +1,4 @@
-(load #p"avlptree.lisp")
+(load #p"avltree-parent.lisp")
 (load #p"test/avlptree-check.lisp")
 
 #+sbcl (require 'sb-rt)

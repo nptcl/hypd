@@ -242,31 +242,50 @@
     ;;  move
     (setq key1 (avlnode-key node))
     (setq diff (funcall compare key key1))
-    (cond ((< diff 0) (setq next (avlnode-left node)))
-          ((< 0 diff) (setq next (avlnode-right node)))
-          (t (when *replace-mode-avltree*
-               (replace-avlnode node key value))
-             (return (values nil nil))))
-    (multiple-value-setq (next check)
-      (insert-avlnode compare next key value))
+    (when (< diff 0)
+      (go move-left))
+    (when (< 0 diff)
+      (go move-right))
+
+    ;;  equal
+    (when *replace-mode-avltree*
+      (replace-avlnode node key value))
+    (return (values nil nil))
+
+    ;;  left
+    move-left
+    (setq next (avlnode-left node))
+    (multiple-value-setq (next check) (insert-avlnode compare next key value))
     (unless check
       (return (values nil nil)))
     (when (eq check t)
       (return (values node t)))
     (when (eq check 'finish)
-      (if (< diff 0)
-        (setf (avlnode-left node) next)
-        (setf (avlnode-right node) next))
+      (setf (avlnode-left node) next)
       (return (values node t)))
     (when (eq check 'make)
-      (if (< diff 0)
-        (setf (avlnode-left node) next)
-        (setf (avlnode-right node) next)))
+      (setf (avlnode-left node) next))
+    (incf (avlnode-balance node) 1)
+    (go balance)
 
-    ;;  loop
-    (if (< diff 0)
-      (incf (avlnode-balance node) 1)
-      (decf (avlnode-balance node) 1))
+    ;;  right
+    move-right
+    (setq next (avlnode-right node))
+    (multiple-value-setq (next check) (insert-avlnode compare next key value))
+    (unless check
+      (return (values nil nil)))
+    (when (eq check t)
+      (return (values node t)))
+    (when (eq check 'finish)
+      (setf (avlnode-right node) next)
+      (return (values node t)))
+    (when (eq check 'make)
+      (setf (avlnode-right node) next))
+    (decf (avlnode-balance node) 1)
+    (go balance)
+
+    ;;  balance
+    balance
     (setq check (avlnode-balance node))
     (when (zerop check)
       (return (values node t)))  ;;  skip

@@ -1,6 +1,6 @@
 (cl:in-package common-lisp-user)
 (load #p"avltree.lisp")
-(load #p"avlptree.lisp")
+(load #p"avltree-parent.lisp")
 (load #p"bintree.lisp")
 (load #p"rbtree.lisp")
 (load #p"test/avltree-check.lisp")
