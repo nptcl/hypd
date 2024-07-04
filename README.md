@@ -8,7 +8,6 @@ Text tools.
 - [random](develop/random/)
 - [unicode](develop/unicode/)
 - [deflate](develop/deflate/)  [Incomplete]
-- [aes](develop/aes/)
 
 
 # License
